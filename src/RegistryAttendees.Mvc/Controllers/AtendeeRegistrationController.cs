@@ -57,7 +57,7 @@ public class AtendeeRegistrationController : Controller
         }
     }
     
-    public async Task<ActionResult> EditAsync(string industry, string id)
+    public async Task<ActionResult> Edit(string industry, string id)
     {
         var data = await _service.GetByIdAsync(industry, id);
 
