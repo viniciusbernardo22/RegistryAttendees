@@ -1,14 +1,19 @@
-﻿using Azure.Data.Tables;
+﻿using Azure;
+using Azure.Data.Tables;
+using RegistryAttendees.Mvc.Entities;
 using RegistryAttendees.Mvc.Interfaces;
 
 namespace RegistryAttendees.Mvc.Services;
 
-public class TableStorageService<T> : ITableStorageService<T>
+public class TableStorageService<T> : ITableStorageService<T> where T : class, ITableEntity
 {
     private const string TableName = $"{nameof(T)}s";
     
     private readonly IConfiguration _configuration;
-
+    
+        public TableStorageService(IConfiguration configuration)
+        => _configuration = configuration;
+        
     private async Task<TableClient> GetTableClient()
     {
         var serviceClient = new TableServiceClient(_configuration["StorageConnectionString"]);
@@ -18,28 +23,28 @@ public class TableStorageService<T> : ITableStorageService<T>
         return tableClient;
     }
     
-    public TableStorageService(IConfiguration configuration)
+    public async Task<T> GetByIdAsync(string industry, string id)
     {
-        _configuration = configuration;
+        var tableClient = await GetTableClient();
+        return await tableClient.GetEntityAsync<T>(industry, id);
     }
     
-    public async Task<T> GetById(string id)
+    public async Task<List<T>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var tableClient = await GetTableClient();
+        return tableClient.Query<T>().ToList();
     }
 
-    public async Task<List<T>> GetAll()
+    public async Task UpsertAsync(T attendee)
     {
-        throw new NotImplementedException();
+        var tableClient = await GetTableClient(); 
+        await tableClient.UpsertEntityAsync(attendee);
     }
 
-    public async Task Upsert(T attendee)
+    public async Task DeleteAsync(string industry, string id)
     {
-        throw new NotImplementedException();
-    }
+        var tableClient = await GetTableClient();
 
-    public async Task Delete(string? id)
-    {
-        throw new NotImplementedException();
+        await tableClient.DeleteEntityAsync(industry, id);
     }
 }

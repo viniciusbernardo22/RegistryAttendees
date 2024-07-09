@@ -1,15 +1,16 @@
-﻿using RegistryAttendees.Mvc.Entities;
+﻿using Azure.Data.Tables;
+using RegistryAttendees.Mvc.Entities;
 
 namespace RegistryAttendees.Mvc.Interfaces;
 
-public interface ITableStorageService<T>
+public interface ITableStorageService<T> where T : class, ITableEntity
 {
-        Task<T> GetById(string id);
+        Task<T> GetByIdAsync(string industry,string id);
 
-        Task<List<T>> GetAll();
+        Task<List<T>> GetAllAsync();
 
-        Task Upsert(T attendee);
+        Task UpsertAsync(T attendee);
 
-        Task Delete(string? id);
+        Task DeleteAsync(string industry, string id);
 
 }
