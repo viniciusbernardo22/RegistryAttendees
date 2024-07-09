@@ -18,6 +18,7 @@ public class AtendeeRegistrationController : Controller
 
     public async Task<ActionResult> Index()
     {
+        
         var data = await _service.GetAllAsync();
         
         _logger.LogWarning("Executed _service.GetAllAsync()");
@@ -27,6 +28,7 @@ public class AtendeeRegistrationController : Controller
 
     public async Task<ActionResult> Details(string industry, string id)
     {
+        
         var data = await _service.GetByIdAsync(industry, id);
         _logger.LogWarning("Executed _service.GetByIdAsync(industry, id)");
         
@@ -42,6 +44,7 @@ public class AtendeeRegistrationController : Controller
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> Create(Attendee attendee)
     {
+        
         try
         {
             attendee.PartitionKey = attendee.Industry;
@@ -49,18 +52,22 @@ public class AtendeeRegistrationController : Controller
 
             await _service.UpsertAsync(attendee);
 
+            _logger.LogWarning("Executed _service.UpsertAsync(attendee)");
+            
             return RedirectToAction(nameof(Index));
         }
         catch
         {
             return View();
         }
+        
     }
     
     public async Task<ActionResult> Edit(string industry, string id)
     {
         var data = await _service.GetByIdAsync(industry, id);
 
+        _logger.LogWarning("Executed _service.GetByIdAsync(industry, id)");
         return View(data);
     }
 
@@ -74,6 +81,7 @@ public class AtendeeRegistrationController : Controller
             
             await _service.UpsertAsync(attendee);
 
+            _logger.LogWarning("Executed _service.UpsertAsync(attendee)");
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -90,6 +98,8 @@ public class AtendeeRegistrationController : Controller
         {
             await _service.DeleteAsync(industry, id);
 
+            _logger.LogWarning("Executed _service.DeleteAsync(industry, id)");
+            
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)

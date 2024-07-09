@@ -10,7 +10,7 @@ namespace RegistryAttendees.Mvc.Services;
 
 public class TableStorageService<T> : ITableStorageService<T> where T : class, ITableEntity
 {
-    private const string TableName = $"{nameof(T)}s";
+    private const string TableName = "Atendees";
 
     private readonly IConfiguration _configuration;
     public TableStorageService(IConfiguration configuration)
@@ -20,6 +20,7 @@ public class TableStorageService<T> : ITableStorageService<T> where T : class, I
     private async Task<TableClient> GetTableClient()
     {
         var serviceClient = new TableServiceClient(_configuration.GetAzureStorageConnectionString());
+        
         var tableClient = serviceClient.GetTableClient(TableName);
         /*Create table if not exists*/
         await tableClient.CreateIfNotExistsAsync();

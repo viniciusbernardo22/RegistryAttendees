@@ -1,7 +1,7 @@
-﻿@model dynamic
+﻿@model RegistryAttendees.Mvc.Entities.Attendee
 
 @{
-    ViewData["Title"] = "EditAsync";
+ViewData["Title"] = "EditAsync";
 }
 
 <h1>EditAsync</h1>
@@ -13,7 +13,7 @@
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="RowKey"/>
-            <input type="hidden" asp-for="ImageName"/>
+            
             <div class="form-group">
                 <label class="control-label">Upload Avatar</label>
                 <input type="file" class="form-control" name="formFile" />
@@ -29,9 +29,9 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmailAddress" class="control-label"></label>
-                <input asp-for="EmailAddress" class="form-control" />
-                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Industry" class="control-label"></label>
