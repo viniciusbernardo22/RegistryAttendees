@@ -9,6 +9,7 @@ public class Attendee : ITableEntity
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; private set; }
+    public string Industry { get; set; }
     
     /* Azure TbEntity Props */
     public string PartitionKey { get; set; }
