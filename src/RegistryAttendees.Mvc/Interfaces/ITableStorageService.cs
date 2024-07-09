@@ -5,12 +5,12 @@ namespace RegistryAttendees.Mvc.Interfaces;
 
 public interface ITableStorageService<T> where T : class, ITableEntity
 {
-        Task<T> GetByIdAsync(string industry,string id);
+        Task<T> GetByIdAsync(string partitionKey,string identifier);
 
         Task<List<T>> GetAllAsync();
 
         Task UpsertAsync(T attendee);
 
-        Task DeleteAsync(string industry, string id);
+        Task DeleteAsync(string partitionKey, string identifier);
 
 }

@@ -23,10 +23,10 @@ public class TableStorageService<T> : ITableStorageService<T> where T : class, I
         return tableClient;
     }
     
-    public async Task<T> GetByIdAsync(string industry, string id)
+    public async Task<T> GetByIdAsync(string partitionKey, string identifier)
     {
         var tableClient = await GetTableClient();
-        return await tableClient.GetEntityAsync<T>(industry, id);
+        return await tableClient.GetEntityAsync<T>(partitionKey, identifier);
     }
     
     public async Task<List<T>> GetAllAsync()
@@ -35,16 +35,16 @@ public class TableStorageService<T> : ITableStorageService<T> where T : class, I
         return tableClient.Query<T>().ToList();
     }
 
-    public async Task UpsertAsync(T attendee)
+    public async Task UpsertAsync(T entity)
     {
         var tableClient = await GetTableClient(); 
-        await tableClient.UpsertEntityAsync(attendee);
+        await tableClient.UpsertEntityAsync(entity);
     }
 
-    public async Task DeleteAsync(string industry, string id)
+    public async Task DeleteAsync(string partitionKey, string identifier)
     {
         var tableClient = await GetTableClient();
 
-        await tableClient.DeleteEntityAsync(industry, id);
+        await tableClient.DeleteEntityAsync(partitionKey, identifier);
     }
 }
