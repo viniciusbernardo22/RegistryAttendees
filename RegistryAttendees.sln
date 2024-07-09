@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistryAttendees.Mvc", "src\RegistryAttendees.Mvc\RegistryAttendees.Mvc.csproj", "{EFC083F1-ED66-439F-A4FC-4DD49004966D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFC083F1-ED66-439F-A4FC-4DD49004966D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFC083F1-ED66-439F-A4FC-4DD49004966D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFC083F1-ED66-439F-A4FC-4DD49004966D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFC083F1-ED66-439F-A4FC-4DD49004966D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
