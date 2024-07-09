@@ -11,6 +11,8 @@ public class Attendee : ITableEntity
     public string Email { get;  set; }
     public string Industry { get; set; }
     
+    public string ImageName { get; set; }
+    
     /* Azure TbEntity Props */
     public string PartitionKey { get; set; }
     public string RowKey { get; set; }
