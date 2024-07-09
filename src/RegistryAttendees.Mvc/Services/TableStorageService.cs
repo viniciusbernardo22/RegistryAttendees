@@ -1,22 +1,25 @@
 ﻿using Azure;
 using Azure.Data.Tables;
 using RegistryAttendees.Mvc.Entities;
+using RegistryAttendees.Mvc.Extensions;
 using RegistryAttendees.Mvc.Interfaces;
+using ConfigurationExtensions = RegistryAttendees.Mvc.Extensions.ConfigurationExtensions;
+
 
 namespace RegistryAttendees.Mvc.Services;
 
 public class TableStorageService<T> : ITableStorageService<T> where T : class, ITableEntity
 {
     private const string TableName = $"{nameof(T)}s";
-    
+
     private readonly IConfiguration _configuration;
-    
-        public TableStorageService(IConfiguration configuration)
-        => _configuration = configuration;
-        
+    public TableStorageService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
     private async Task<TableClient> GetTableClient()
     {
-        var serviceClient = new TableServiceClient(_configuration["StorageConnectionString"]);
+        var serviceClient = new TableServiceClient(_configuration.GetAzureStorageConnectionString());
         var tableClient = serviceClient.GetTableClient(TableName);
         /*Create table if not exists*/
         await tableClient.CreateIfNotExistsAsync();

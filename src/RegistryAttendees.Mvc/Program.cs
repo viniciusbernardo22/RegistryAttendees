@@ -1,12 +1,14 @@
 using RegistryAttendees.Mvc.Entities;
+using RegistryAttendees.Mvc.Extensions;
 using RegistryAttendees.Mvc.Interfaces;
+using RegistryAttendees.Mvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<ITableStorageService<Attendee>, ITableStorageService<Attendee>>();
+builder.Services.AddScoped<ITableStorageService<Attendee>, TableStorageService<Attendee>>();
 
 var app = builder.Build();
 
