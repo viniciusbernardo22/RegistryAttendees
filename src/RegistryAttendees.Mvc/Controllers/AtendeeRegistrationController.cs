@@ -89,14 +89,19 @@ public class AtendeeRegistrationController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Edit(int id, Attendee attendee)
+    public async Task<ActionResult> Edit(int id, Attendee attendee, IFormFile formFile)
     {
         try
         {
+            if (formFile?.Length > 0)
+            {
+                attendee.ImageName = formFile.Name;
+                await _blobStorageService.UploadBlob(formFile, attendee.RowKey);
+            }
             attendee.PartitionKey = attendee.Industry;
-            
             await _tableStorageService.UpsertAsync(attendee);
 
+          
             _logger.LogWarning("Executed _service.UpsertAsync(attendee)");
             return RedirectToAction(nameof(Index));
         }
@@ -112,8 +117,12 @@ public class AtendeeRegistrationController : Controller
     {
         try
         {
+            var attendee = await _tableStorageService.GetByIdAsync(industry, id);
+            
             await _tableStorageService.DeleteAsync(industry, id);
 
+            await _blobStorageService.RemoveBlob(attendee.ImageName);
+            
             _logger.LogWarning("Executed _service.DeleteAsync(industry, id)");
             
             return RedirectToAction(nameof(Index));

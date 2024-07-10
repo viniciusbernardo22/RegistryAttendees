@@ -13,8 +13,8 @@ public class BlobStorageService : IBlobStorageService
 
     private readonly IConfiguration _configuration;
 
-    private readonly ILogger _logger;
-    public BlobStorageService(ILogger logger, IConfiguration configuration)
+    private readonly ILogger<BlobStorageService> _logger;
+    public BlobStorageService(ILogger<BlobStorageService> logger, IConfiguration configuration)
     {
         _configuration = configuration;
         _logger = logger;
