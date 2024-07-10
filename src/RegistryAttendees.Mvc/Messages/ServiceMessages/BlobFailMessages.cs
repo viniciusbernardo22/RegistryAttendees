@@ -7,4 +7,7 @@ public static class BlobFailMessages
     
     public static string ProblemWhileObtainingInstance(string serviceName)
         => $"{serviceName}: Problems while saving blobFile to Cloud BlobStorage.";
+    
+    public static string ProblemWhileGettingBlobUrl(string serviceName)
+        => $"{serviceName}: Problems while trying to obtain the blob Url on CloudProvider.";
 }

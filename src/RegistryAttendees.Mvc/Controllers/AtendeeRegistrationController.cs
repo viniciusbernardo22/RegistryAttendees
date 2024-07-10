@@ -7,29 +7,35 @@ namespace RegistryAttendees.Mvc.Controllers;
 
 public class AtendeeRegistrationController : Controller
 {
-    private readonly ITableStorageService<Attendee> _service;
+    private readonly ITableStorageService<Attendee> _tableStorageService;
+    private readonly IBlobStorageService _blobStorageService;
     private readonly ILogger<AtendeeRegistrationController> _logger;
     
-    public AtendeeRegistrationController(ILogger<AtendeeRegistrationController> logger, ITableStorageService<Attendee> service)
+    public AtendeeRegistrationController(ILogger<AtendeeRegistrationController> logger, ITableStorageService<Attendee> service, IBlobStorageService blobStorageService)
     {
-        _service = service;
+        _tableStorageService = service;
+        _blobStorageService = blobStorageService;
         _logger = logger;
     }
 
     public async Task<ActionResult> Index()
     {
         
-        var data = await _service.GetAllAsync();
-        
+        List<Attendee> atendees = await _tableStorageService.GetAllAsync();
+
+        foreach (Attendee attendee in atendees)
+        {
+            attendee.ImageName = await _blobStorageService.GetBlobUrl(attendee.ImageName);
+        }
         _logger.LogWarning("Executed _service.GetAllAsync()");
         
-        return View(data);
+        return View(atendees);
     }
 
     public async Task<ActionResult> Details(string industry, string id)
     {
         
-        var data = await _service.GetByIdAsync(industry, id);
+        var data = await _tableStorageService.GetByIdAsync(industry, id);
         _logger.LogWarning("Executed _service.GetByIdAsync(industry, id)");
         
         return View(data);
@@ -42,15 +48,25 @@ public class AtendeeRegistrationController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(Attendee attendee)
+    public async Task<ActionResult> Create(Attendee attendee, IFormFile formFile)
     {
-        
         try
         {
+            string id = Guid.NewGuid().ToString();
             attendee.PartitionKey = attendee.Industry;
-            attendee.RowKey = Guid.NewGuid().ToString();
+            attendee.RowKey = id;
 
-            await _service.UpsertAsync(attendee);
+            if (formFile.Length > 0)
+            {
+                attendee.ImageName = await _blobStorageService.UploadBlob(formFile, id);
+            }
+            else
+            {
+                attendee.ImageName = "default.jpg";
+            }
+            
+
+            await _tableStorageService.UpsertAsync(attendee);
 
             _logger.LogWarning("Executed _service.UpsertAsync(attendee)");
             
@@ -65,7 +81,7 @@ public class AtendeeRegistrationController : Controller
     
     public async Task<ActionResult> Edit(string industry, string id)
     {
-        var data = await _service.GetByIdAsync(industry, id);
+        var data = await _tableStorageService.GetByIdAsync(industry, id);
 
         _logger.LogWarning("Executed _service.GetByIdAsync(industry, id)");
         return View(data);
@@ -79,7 +95,7 @@ public class AtendeeRegistrationController : Controller
         {
             attendee.PartitionKey = attendee.Industry;
             
-            await _service.UpsertAsync(attendee);
+            await _tableStorageService.UpsertAsync(attendee);
 
             _logger.LogWarning("Executed _service.UpsertAsync(attendee)");
             return RedirectToAction(nameof(Index));
@@ -96,7 +112,7 @@ public class AtendeeRegistrationController : Controller
     {
         try
         {
-            await _service.DeleteAsync(industry, id);
+            await _tableStorageService.DeleteAsync(industry, id);
 
             _logger.LogWarning("Executed _service.DeleteAsync(industry, id)");
             
