@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ITableStorageService<Attendee>, TableStorageService<Attendee>>();
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+
 
 var app = builder.Build();
 
