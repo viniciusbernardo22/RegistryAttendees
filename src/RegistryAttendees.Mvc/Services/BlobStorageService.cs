@@ -1,4 +1,6 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using RegistryAttendees.Mvc.Extensions;
 using RegistryAttendees.Mvc.Interfaces;
 using RegistryAttendees.Mvc.Messages.ServiceMessages;
@@ -33,8 +35,7 @@ public class BlobStorageService : IBlobStorageService
             throw;
         }
     }
-
-
+    
     public async Task<string> UploadBlob(IFormFile formFile, string imageName)
     {
         try
@@ -54,5 +55,41 @@ public class BlobStorageService : IBlobStorageService
             throw;
         }
        
+    }
+
+    public async Task<string> GetBlobUrl(string imageName)
+    {
+        try
+        {
+            var container = await GetBlobContainerClient();
+
+            var blob = container.GetBlobClient(imageName);
+
+            BlobSasBuilder blobSasBuilder = new()
+            {
+                BlobContainerName = blob.BlobContainerName,
+                BlobName = blob.Name,
+                ExpiresOn = DateTime.UtcNow.AddMinutes(2),
+                Protocol = SasProtocol.Https,
+                Resource = "b"
+            };
+            blobSasBuilder.SetPermissions(BlobAccountSasPermissions.Read);
+            return blob.GenerateSasUri(blobSasBuilder).ToString();
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning(BlobFailMessages.ProblemWhileGettingBlobUrl(nameof(BlobStorageService)));
+            throw;
+        }
+        
+    }
+
+    public async Task RemoveBlob(string imageName)
+    {
+        var container = await GetBlobContainerClient();
+
+        var blob = container.GetBlobClient(imageName);
+
+        await blob.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
     }
 }
